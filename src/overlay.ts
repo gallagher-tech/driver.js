@@ -90,21 +90,33 @@ function mountOverlay(stagePosition: StageDefinition) {
 }
 
 function renderOverlay(stagePosition: StageDefinition) {
-  const overlaySvg = getState("__overlaySvg");
+  let overlaySvg = getState("__overlaySvg");
 
-  // TODO: cancel rendering if element is not visible
   if (!overlaySvg) {
     mountOverlay(stagePosition);
-
-    return;
+    overlaySvg = getState("__overlaySvg");
+    if (!overlaySvg) return; // Safety
   }
 
-  const pathElement = overlaySvg.firstElementChild as SVGPathElement | null;
-  if (pathElement?.tagName !== "path") {
-    throw new Error("no path element found in stage svg");
+  let pathElement = overlaySvg.querySelector("path") as SVGPathElement | null;
+
+  // Create the path if it doesn't exist
+  if (!pathElement) {
+    pathElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    pathElement.style.fill = getConfig("overlayColor") || "rgb(0,0,0)";
+    pathElement.style.opacity = `${getConfig("overlayOpacity")}`;
+    pathElement.style.pointerEvents = "auto";
+    pathElement.style.cursor = "auto";
+    pathElement.setAttribute("filter", "url(#softEdgeBlur)");
+
+    overlaySvg.appendChild(pathElement);
   }
 
+  // Update the path geometry
   pathElement.setAttribute("d", generateStageSvgPathString(stagePosition));
+
+  // Re-apply the filter to ensure soft edges
+  pathElement.setAttribute("filter", "url(#softEdgeBlur)");
 }
 
 function createOverlaySvg(stage: StageDefinition): SVGSVGElement {
@@ -131,14 +143,34 @@ function createOverlaySvg(stage: StageDefinition): SVGSVGElement {
   svg.style.width = "100%";
   svg.style.height = "100%";
 
-  const stagePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  // --- Add blur filter for soft edges ---
+  const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+  const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+  filter.setAttribute("id", "softEdgeBlur");
+  filter.setAttribute("x", "-50%");
+  filter.setAttribute("y", "-50%");
+  filter.setAttribute("width", "200%");
+  filter.setAttribute("height", "200%");
 
+  const feGaussianBlur = document.createElementNS("http://www.w3.org/2000/svg", "feGaussianBlur");
+  feGaussianBlur.setAttribute("in", "SourceGraphic");
+  feGaussianBlur.setAttribute("stdDeviation", "8"); // adjust for softer/harder edges
+
+  filter.appendChild(feGaussianBlur);
+  defs.appendChild(filter);
+  svg.appendChild(defs);
+  // --------------------------------------
+
+  const stagePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
   stagePath.setAttribute("d", generateStageSvgPathString(stage));
 
   stagePath.style.fill = getConfig("overlayColor") || "rgb(0,0,0)";
   stagePath.style.opacity = `${getConfig("overlayOpacity")}`;
   stagePath.style.pointerEvents = "auto";
   stagePath.style.cursor = "auto";
+
+  // Apply the blur filter to the path
+  stagePath.setAttribute("filter", "url(#softEdgeBlur)");
 
   svg.appendChild(stagePath);
 
