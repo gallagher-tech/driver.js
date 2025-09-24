@@ -205,6 +205,22 @@ function generateStageSvgPathString(stage: StageDefinition) {
 export function destroyOverlay() {
   const overlaySvg = getState("__overlaySvg");
   if (overlaySvg) {
-    overlaySvg.remove();
+    overlaySvg.classList.add("driver-fade-out");
+
+    // wait for CSS fade out transition in Onboarding.vue to finish before removing the overlay
+    setTimeout(() => {
+      overlaySvg.remove();
+    }, 1000); // match transition duration
+  }
+}
+
+// destroy the popover (fade out)
+export function destroyPopover() {
+  const popover = document.querySelector(".driver-popover") as HTMLElement | null;
+  if (popover) {
+    popover.classList.add("driver-fade-out");
+    setTimeout(() => {
+      popover.remove();
+    }, 1000);
   }
 }
