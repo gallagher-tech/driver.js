@@ -4,6 +4,8 @@ import { emit } from "./emitter";
 import { getConfig } from "./config";
 import { getState, setState } from "./state";
 
+export const onboardingFadeOutTime = 1000; //ms of how long it takes for Onboarding Overlay to fade out.
+
 export type StageDefinition = {
   x: number;
   y: number;
@@ -154,7 +156,7 @@ function createOverlaySvg(stage: StageDefinition): SVGSVGElement {
 
   const feGaussianBlur = document.createElementNS("http://www.w3.org/2000/svg", "feGaussianBlur");
   feGaussianBlur.setAttribute("in", "SourceGraphic");
-  feGaussianBlur.setAttribute("stdDeviation", "8"); // adjust for softer/harder edges
+  feGaussianBlur.setAttribute("stdDeviation", "6"); // adjust for softer/harder edges
 
   filter.appendChild(feGaussianBlur);
   defs.appendChild(filter);
@@ -210,7 +212,7 @@ export function destroyOverlay() {
     // wait for CSS fade out transition in Onboarding.vue to finish before removing the overlay
     setTimeout(() => {
       overlaySvg.remove();
-    }, 1000); // match transition duration
+    }, onboardingFadeOutTime); // match transition duration
   }
 }
 
@@ -221,6 +223,6 @@ export function destroyPopover() {
     popover.classList.add("driver-fade-out");
     setTimeout(() => {
       popover.remove();
-    }, 1000);
+    }, onboardingFadeOutTime);
   }
 }
