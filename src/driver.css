@@ -141,7 +141,8 @@
   overflow: hidden !important;
 }
 
-.driver-no-interaction, .driver-no-interaction * {
+.driver-no-interaction,
+.driver-no-interaction * {
   pointer-events: none !important;
 }
 
