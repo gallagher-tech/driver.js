@@ -173,6 +173,17 @@ function generateStageSvgPathString(stage: StageDefinition) {
 export function destroyOverlay() {
   const overlaySvg = getState("__overlaySvg");
   if (overlaySvg) {
-    overlaySvg.remove();
+    // trigger fade out
+    overlaySvg.style.opacity = "0";
+
+    // wait for transition, then remove
+    overlaySvg.addEventListener(
+      "transitionend",
+      () => {
+        overlaySvg.remove();
+        setState("__overlaySvg", undefined); // clear the state
+      },
+      { once: true }
+    );
   }
 }
