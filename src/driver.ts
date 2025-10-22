@@ -165,7 +165,7 @@ export function driver(options: Config = {}): Driver {
     }
 
     setState("isInitialized", true);
-    document.body.classList.add("driver-active", getConfig("animate") ? "driver-fade" : "driver-simple");
+    document.body.classList.add(getConfig("animate") ? "driver-fade" : "driver-simple");
 
     initEvents();
 

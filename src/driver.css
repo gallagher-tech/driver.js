@@ -24,11 +24,11 @@
 }
 
 .driver-fade .driver-overlay {
-  animation: animate-fade-in 200ms ease-in-out;
+  animation: animate-fade-in 1000ms ease-in-out;
 }
 
 .driver-fade .driver-popover {
-  animation: animate-fade-in 200ms;
+  animation: animate-fade-in 1000ms;
 }
 
 /* Popover styles */
@@ -42,7 +42,7 @@
   min-width: 250px;
   max-width: 300px;
   box-shadow: 0 1px 10px #0006;
-  z-index: 1000000000;
+  z-index: 20;
   position: fixed;
   top: 0;
   right: 0;

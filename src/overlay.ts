@@ -75,7 +75,8 @@ export function refreshOverlay() {
 
 function mountOverlay(stagePosition: StageDefinition) {
   const overlaySvg = createOverlaySvg(stagePosition);
-  document.body.appendChild(overlaySvg);
+  document.getElementsByClassName('matrix-wrapper')[0].appendChild(overlaySvg);
+  // document.body.appendChild(overlaySvg);
 
   onDriverClick(overlaySvg, e => {
     const target = e.target as SVGElement;
@@ -124,7 +125,7 @@ function createOverlaySvg(stage: StageDefinition): SVGSVGElement {
   svg.style.clipRule = "evenodd";
   svg.style.strokeLinejoin = "round";
   svg.style.strokeMiterlimit = "2";
-  svg.style.zIndex = "10000";
+  svg.style.zIndex = "18";
   svg.style.position = "fixed";
   svg.style.top = "0";
   svg.style.left = "0";

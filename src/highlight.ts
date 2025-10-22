@@ -57,7 +57,7 @@ export function refreshActiveHighlight() {
 }
 
 function transferHighlight(toElement: Element, toStep: DriveStep) {
-  const duration = 400;
+  const duration = 1000;
   const start = Date.now();
 
   const fromStep = getState("__activeStep");
